@@ -40,7 +40,4 @@ Sample APIs
 * GET `/products`
 * POST `/cart`
 * POST `/checkout`
-✅ Or write **backend + frontend code for your modules**  
 
-Just tell me 👍
-```

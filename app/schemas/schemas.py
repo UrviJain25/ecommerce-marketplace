@@ -106,3 +106,48 @@ class CartItemOut(BaseModel):
 class CartOut(BaseModel):
     items: List[CartItemOut]
     total: float
+
+# ─── Orders ─────────────────────────────────────────────────────────────
+
+class OrderItemOut(BaseModel):
+    product_id: int
+    quantity: int
+    price: float
+
+    class Config:
+        from_attributes = True
+
+
+class OrderOut(BaseModel):
+    id: int
+    user_id: int
+    total_amount: float
+    created_at: datetime
+    items: List[OrderItemOut] = []
+
+    class Config:
+        from_attributes = True
+
+
+# ─── Invoice ────────────────────────────────────────────────────────────
+
+class InvoiceOut(BaseModel):
+    id: int
+    order_id: int
+    total_amount: float
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# ─── Alerts ─────────────────────────────────────────────────────────────
+
+class AlertOut(BaseModel):
+    id: int
+    product_id: int
+    message: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

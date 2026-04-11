@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.database import Base, engine
 from app.api.v1.endpoints import auth, categories, products, cart
+from app.api.v1.endpoints import orders, invoices, alerts
 
 # Create all tables on startup (use Alembic in production)
 Base.metadata.create_all(bind=engine)
@@ -26,6 +27,9 @@ app.include_router(auth.router, prefix="/api/v1")
 app.include_router(categories.router, prefix="/api/v1")
 app.include_router(products.router, prefix="/api/v1")
 app.include_router(cart.router, prefix="/api/v1")
+app.include_router(orders.router, prefix="/api/v1")
+app.include_router(invoices.router, prefix="/api/v1")
+app.include_router(alerts.router, prefix="/api/v1")
 
 
 

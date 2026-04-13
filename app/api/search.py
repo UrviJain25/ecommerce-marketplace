@@ -38,7 +38,7 @@ def search_products(
     #Category validation + filter
     if category_id:
         category = db.query(models.Category).filter(
-            models.Category.category_id == category_id
+            models.Category.id == category_id
         ).first()
 
         if not category:

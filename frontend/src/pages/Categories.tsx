@@ -7,7 +7,7 @@ export default function Categories() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
 
-  // ✅ attach token manually
+  //attach token manually
   const getHeaders = () => ({
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   });

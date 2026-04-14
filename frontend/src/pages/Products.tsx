@@ -27,11 +27,6 @@ export default function Products() {
   const handleFetch = async () => {
   try {
     // frontend validation
-    if (!search && !minPrice && !maxPrice && !categoryId) {
-      setError("Please enter at least one filter");
-      return;
-    }
-
     if (
       minPrice !== undefined &&
       maxPrice !== undefined &&
@@ -52,15 +47,15 @@ export default function Products() {
       max_price: maxPrice,
       category_id: categoryId,
     });
-
+    if(data.length==0) setError("No search results")
+    else setError(""); // clear error on success
     setProducts(data);
-    setError(""); // clear error on success
+    
   } catch (err: any) {
   console.log("SEARCH ERROR:", err.response?.data);
 
   const data = err.response?.data;
 
-  // 🔥 Handle FastAPI string error (404, 400)
   const backendMsg =
     typeof data?.detail === "string"
       ? data.detail

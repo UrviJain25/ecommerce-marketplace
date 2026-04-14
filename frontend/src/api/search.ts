@@ -17,7 +17,6 @@ export const searchProducts = async (
 
     return res.data;
   } catch (err: any) {
-    // 🔥 IMPORTANT: forward backend error to UI
     throw err;
   }
 };

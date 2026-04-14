@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models import models
 from app.schemas import schemas
-from .auth import get_current_user   # ✅ IMPORTANT
+from .auth import get_current_user  
 
 router = APIRouter()
 
@@ -36,7 +36,7 @@ def add_review(
     if review.rating < 1 or review.rating > 5:
         raise HTTPException(status_code=400, detail="Rating must be between 1 and 5")
 
-    # ✅ CREATE REVIEW USING TOKEN USER
+    # CREATE REVIEW USING TOKEN USER
     new_review = models.Review(
         user_id=current_user.id,
         product_id=review.product_id,

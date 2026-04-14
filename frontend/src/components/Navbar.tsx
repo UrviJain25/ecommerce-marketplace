@@ -1,11 +1,30 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getMe } from "../api/auth";
 
 export default function Navbar() {
   const navigate = useNavigate();
 
+  const [role, setRole] = useState<string | null>(null);
+
+  // Fetch role
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getMe();
+        setRole(user.role);
+      } catch {
+        setRole(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const logout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    localStorage.removeItem("user");
+    window.location.href = "/login";
   };
 
   return (
@@ -13,30 +32,40 @@ export default function Navbar() {
 
       {/* LEFT */}
       <Link to="/" className="font-bold text-lg">
-        🛒E-Commerce store
+        🛒 E-Commerce Store
       </Link>
 
       <Link to="/products">Products</Link>
       <Link to="/cart">Cart</Link>
       <Link to="/orders">Orders</Link>
       <Link to="/profile">Profile</Link>
-      <Link to="/reports">Reports</Link>
-      {/* ✅ SELLER FEATURES (ALWAYS SHOW FOR NOW) */}
-      <Link to="/my-products">My Products</Link>
-      <Link to="/categories">Categories</Link>
+
+      {/* SELLER + ADMIN */}
+      {(role === "seller" || role === "admin") && (
+        <Link to="/my-products">My Products</Link>
+      )}
+
+      {/* ADMIN ONLY */}
+      {role === "admin" && (
+        <>
+          <Link to="/categories">Categories</Link>
+          <Link to="/reports">Reports</Link>
+        </>
+      )}
+
       {/* RIGHT */}
       <div className="ml-auto flex gap-3">
 
-        <button
-          onClick={() => navigate("/recommendations")}
-          className="bg-purple-500 px-3 py-1"
-        >
-          AI Recs
-        </button>
+          <button
+            onClick={() => navigate("/recommendations")}
+            className="bg-purple-500 px-3 py-1 rounded hover:bg-purple-600"
+          >
+            AI Recs
+          </button>
 
         <button
           onClick={logout}
-          className="bg-red-500 px-3 py-1"
+          className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
         >
           Logout
         </button>

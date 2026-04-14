@@ -6,7 +6,7 @@ import Login from "../pages/Login";
 import Products from "../pages/Products";
 import Cart from "../pages/Cart";
 import Orders from "../pages/Orders";
-import Reviews from "../pages/Reviews";
+import Reviews from "../pages/Review";
 import Categories from "../pages/Categories";
 
 export default function AppRoutes() {

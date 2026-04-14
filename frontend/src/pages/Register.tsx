@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../api/auth";
 import { handleApiError } from "../api/axios";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +26,11 @@ export default function Register() {
       setSuccess("User registered successfully 🎉");
       setError("");
 
+      //redirect after 1 sec
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+
     } catch (err: any) {
       setError(handleApiError(err));
       setSuccess("");
@@ -30,54 +38,75 @@ export default function Register() {
   };
 
   return (
-    <div className="p-10">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      
+      <div className="bg-white p-8 rounded shadow-md w-96">
+        
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Register
+        </h2>
 
-      <h1 className="text-3xl font-bold mb-6">
-        Register
-      </h1>
+        {error && (
+          <div className="bg-red-100 text-red-700 p-2 mb-4 border rounded">
+            {error}
+          </div>
+        )}
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      {success && <p className="text-green-600 mb-4">{success}</p>}
-
-      <div className="grid grid-cols-2 gap-4 mb-6">
+        {success && (
+          <div className="bg-green-100 text-green-700 p-2 mb-4 border rounded">
+            {success}
+          </div>
+        )}
 
         <input
+          type="text"
           placeholder="Name"
-          className="border p-2"
+          value={name}
           onChange={(e) => setName(e.target.value)}
+          className="border p-2 w-full mb-4 rounded"
         />
 
         <input
+          type="email"
           placeholder="Email"
-          className="border p-2"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="border p-2 w-full mb-4 rounded"
         />
 
         <input
           type="password"
           placeholder="Password"
-          className="border p-2"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="border p-2 w-full mb-4 rounded"
         />
 
         <select
-          className="border p-2"
+          value={role}
           onChange={(e) => setRole(e.target.value)}
+          className="border p-2 w-full mb-4 rounded"
         >
           <option value="user">User</option>
           <option value="seller">Seller</option>
           <option value="admin">Admin</option>
         </select>
 
+        <button
+          onClick={handleRegister}
+          className="bg-green-500 text-white w-full py-2 rounded hover:bg-green-600"
+        >
+          Register
+        </button>
+
+        <p className="mt-4 text-center">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
+        </p>
+
       </div>
-
-      <button
-        onClick={handleRegister}
-        className="bg-green-500 text-white px-6 py-2"
-      >
-        Register
-      </button>
-
     </div>
   );
 }

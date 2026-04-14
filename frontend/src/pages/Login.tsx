@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../api/auth";
+import { loginUser, getMe } from "../api/auth";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -8,18 +8,31 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  
+
   const handleLogin = async () => {
     try {
+      // Optional validation
+      if (!email || !password) {
+        setError("Please enter email and password");
+        return;
+      }
+
       const res = await loginUser({
         email,
         password,
       });
 
-      // Save token
+      // Save token (only once)
       localStorage.setItem("token", res.access_token);
+
+      // Fetch user info
+      const user = await getMe();
+      localStorage.setItem("user", JSON.stringify(user));
+
       setError("");
-      navigate("/products");
+
+      window.location.href = "/products";
+
     } catch (err: any) {
       setError(err?.response?.data?.detail || "Login failed");
     }
@@ -27,7 +40,6 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      
       <div className="bg-white p-8 rounded shadow-md w-96">
         
         <h2 className="text-2xl font-bold mb-6 text-center">
@@ -63,7 +75,6 @@ export default function Login() {
           Login
         </button>
 
-        {/* ✅ REGISTER LINK */}
         <p className="mt-4 text-center">
           Don't have an account?{" "}
           <Link to="/register" className="text-blue-500 hover:underline">

@@ -14,3 +14,14 @@ export const getMe = async () => {
   const res = await api.get("/auth/auth/me");
   return res.data;
 };
+
+export const getUserRole = () => {
+  const user = localStorage.getItem("user");
+  if (!user) return null;
+
+  try {
+    return JSON.parse(user).role;
+  } catch {
+    return null;
+  }
+};

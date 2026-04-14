@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createProduct } from "../api/products";
 import { useNavigate } from "react-router-dom";
+import { getMe } from "../api/auth";
 
 export default function CreateProduct() {
   const [form, setForm] = useState({
@@ -11,14 +12,36 @@ export default function CreateProduct() {
     category_id: "",
   });
 
+  const [userId, setUserId] = useState<number | null>(null);
   const [error, setError] = useState("");
+
   const navigate = useNavigate();
+
+  // Fetch logged-in user
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getMe();
+        setUserId(user.id);
+      } catch (err) {
+        console.log("Failed to fetch user");
+        setError("User not authenticated");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleSubmit = async () => {
     try {
-      // ✅ validation
+      // validation
       if (!form.name || !form.price) {
         setError("Name and price are required");
+        return;
+      }
+
+      if (!userId) {
+        setError("User not loaded yet");
         return;
       }
 
@@ -27,11 +50,8 @@ export default function CreateProduct() {
         description: form.description,
         price: parseFloat(form.price),
         stock_qty: form.stock_qty ? parseInt(form.stock_qty) : 0,
+        seller_id: userId,
 
-        // 🔥 REQUIRED BY YOUR BACKEND MODEL
-        seller_id: 1, // ⚠️ TEMP FIX (replace with logged-in user later)
-
-        // optional (can be null)
         category_id: form.category_id
           ? parseInt(form.category_id)
           : null,

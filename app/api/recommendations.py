@@ -3,25 +3,27 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.core.database import get_db
 from app.models import models
+from app.core.dependencies import get_current_user  # ✅ IMPORTANT
 
 router = APIRouter()
 
 
-@router.get("/{user_id}")
+@router.get("/")
 def recommend_products(
-    user_id: int,
+    current_user: models.User = Depends(get_current_user),  # ✅ from JWT
     limit: int = Query(10, ge=1, le=50),
     db: Session = Depends(get_db)
 ):
 
-    # Validate user
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+    # Get user from token
+    user = db.query(models.User).filter(
+        models.User.email == current_user.email
+    ).first()
+
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Restrict role (only normal users)
-    if user.role != models.UserRole.user:
-        raise HTTPException(status_code=403, detail="Recommendations only for users")
+    user_id = user.id 
 
     # Get ordered products
     ordered_products = db.query(models.OrderItem.product_id).join(

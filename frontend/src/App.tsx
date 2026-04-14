@@ -33,13 +33,7 @@ export default function App() {
         {/* DEFAULT */}
         <Route
           path="/"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/products" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
+          element={<Navigate to="/login" replace />}
         />
 
         {/* PUBLIC */}
@@ -52,7 +46,7 @@ export default function App() {
           element={!isLoggedIn ? <Register /> : <Navigate to="/products" />}
         />
 
-        {/* PROTECTED */}
+        {/* PROTECTED (ALL USERS) */}
         <Route
           path="/products"
           element={
@@ -62,7 +56,6 @@ export default function App() {
           }
         />
 
-        {/* 🛒 CART + ORDERS */}
         <Route
           path="/cart"
           element={
@@ -81,7 +74,6 @@ export default function App() {
           }
         />
 
-        {/* 🔍 SEARCH */}
         <Route
           path="/search"
           element={
@@ -91,7 +83,6 @@ export default function App() {
           }
         />
 
-        {/* 👤 PROFILE */}
         <Route
           path="/profile"
           element={
@@ -101,35 +92,16 @@ export default function App() {
           }
         />
 
-        {/* 🛍️ SELLER ROUTES (FIXED) */}
         <Route
-          path="/create-product"
+          path="/recommendations"
           element={
             <ProtectedRoute>
-              <CreateProduct />
+              <Recommendations />
             </ProtectedRoute>
           }
         />
 
-        <Route
-          path="/my-products"
-          element={
-            <ProtectedRoute>
-              <MyProducts />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/edit/:id"
-          element={
-            <ProtectedRoute>
-              <EditProduct />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* ⭐ REVIEWS */}
+        {/* REVIEWS */}
         <Route
           path="/products/:id/reviews"
           element={
@@ -147,33 +119,50 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* 🤖 RECOMMENDATIONS */}
+        
+        {/* SELLER + ADMIN */}
         <Route
-          path="/recommendations"
+          path="/my-products"
           element={
-            <ProtectedRoute>
-              <Recommendations />
+            <ProtectedRoute allowedRoles={["seller", "admin"]}>
+              <MyProducts />
             </ProtectedRoute>
           }
         />
 
-        {/* 📊 REPORTS */}
         <Route
-          path="/reports"
+          path="/create-product"
           element={
-            <ProtectedRoute>
-              <Reports />
+            <ProtectedRoute allowedRoles={["seller", "admin"]}>
+              <CreateProduct />
             </ProtectedRoute>
           }
         />
 
-        {/* 📂 CATEGORIES */}
+        <Route
+          path="/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["seller", "admin"]}>
+              <EditProduct />
+            </ProtectedRoute>
+          }
+        />
+
+        {/*ADMIN ONLY */}
         <Route
           path="/categories"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <Categories />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Reports />
             </ProtectedRoute>
           }
         />
